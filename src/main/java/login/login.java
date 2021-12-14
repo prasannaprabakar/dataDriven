@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Iterator;
 
 public class login
 {
@@ -26,6 +27,7 @@ public class login
         WebDriverManager.chromedriver().setup();
         driver= new ChromeDriver();
         driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5000));
 
 
     }
@@ -38,7 +40,10 @@ public class login
     public String[][] getExcelData() throws IOException
     {
 
-        FileInputStream excel=new FileInputStream("C:\\Users\\prasanna.prabakaran\\Downloads\\login.xlsx");
+        String userDir=System.getProperty("user.dir");
+        String pathSeparator = System.getProperty("file.separator");
+        String file_path=userDir+pathSeparator+"src"+pathSeparator+"main"+pathSeparator+"resources"+pathSeparator+"login.xlsx";
+        FileInputStream excel=new FileInputStream(file_path);//C:\Users\prasanna.prabakaran\Downloads\login.xlsx
         //Workbook workbook = new Workbook.getWorkbook(excel);
         XSSFWorkbook workbook=new XSSFWorkbook(excel);
         int noOfSheets=workbook.getNumberOfSheets();// count the no of sheets
@@ -46,7 +51,7 @@ public class login
         int lengthOfRows = sheet.getLastRowNum();
         int lengthOfCells = sheet.getRow(1).getLastCellNum();
         String testData[][]=new String[lengthOfRows-1][lengthOfCells];
-        for(int rowIndex=1;rowIndex<lengthOfRows;rowIndex++){
+       for(int rowIndex=1;rowIndex<lengthOfRows;rowIndex++){
             XSSFRow rowObj = sheet.getRow(rowIndex);
             for(int cellIndex=0;cellIndex<lengthOfCells;cellIndex++){
               XSSFCell cellObj = rowObj.getCell(cellIndex);
@@ -61,7 +66,7 @@ return testData;
         //  @Parameters({"username","password"})
         public void username_password(String uname,String pwd) throws InterruptedException
         {
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5000));
+
         driver.get("https://demoqa.com/login");
         WebElement username=driver.findElement(By.id("userName"));
         username.sendKeys(uname);
